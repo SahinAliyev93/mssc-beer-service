@@ -1,0 +1,12 @@
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\bootstrap\BeerLoader.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\domain\Beer.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\MsscBeerServiceApplication.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\repositories\BeerRepository.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\web\controller\BeerController.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\web\controller\MvcExceptionHandler.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\web\mappers\BeerMapper.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\web\mappers\DateMapper.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\web\model\BeerDto.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\web\model\BeerPageList.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\web\model\BeerStyleEnum.java
+C:\springwork\mssc-beer-service\src\main\java\guru\springframework\msscbeerservice\web\model\CustomerDto.java
