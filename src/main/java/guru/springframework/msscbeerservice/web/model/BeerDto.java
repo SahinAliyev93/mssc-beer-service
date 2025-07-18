@@ -30,6 +30,7 @@ public class BeerDto {
     private OffsetDateTime lastModifiedDate;
 
     @NotBlank
+    @Size(min = 3,max = 50)
     private String beerName;
 
     @NotNull
@@ -42,5 +43,6 @@ public class BeerDto {
     @NotNull
     private BigDecimal price;
 
+    @Positive
     private Integer quantityOnHand;
 }
