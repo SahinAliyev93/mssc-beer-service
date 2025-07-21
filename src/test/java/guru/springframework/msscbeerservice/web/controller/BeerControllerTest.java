@@ -1,14 +1,22 @@
 package guru.springframework.msscbeerservice.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guru.springframework.msscbeerservice.bootstrap.BeerLoader;
+import guru.springframework.msscbeerservice.services.BeerService;
 import guru.springframework.msscbeerservice.web.model.BeerDto;
 import guru.springframework.msscbeerservice.web.model.BeerStyleEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.constraints.ConstraintDescriptions;
@@ -17,15 +25,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.ArgumentMatchers.any;
 
 
 @WebMvcTest(BeerController.class)
@@ -34,7 +46,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         uriPort = 80)
 @ExtendWith(RestDocumentationExtension.class)
 @ComponentScan(basePackages ="guru.springframework.msscbeerservice.web.mappers")
+@Import(BeerControllerTest.LocalBeanConfiguration.class)
 class BeerControllerTest {
+    public static final String BEER_1_UPC = "0631234200036";
+    public static final String BEER_2_UPC = "0631234300019";
+    public static final String BEER_3_UPC = "0083783375213";
 
     @Autowired
     MockMvc mockMvc;
@@ -42,8 +58,19 @@ class BeerControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    BeerService beerService;
+
+    @TestConfiguration
+    static class LocalBeanConfiguration {
+        @Bean
+        public BeerService beerService() {
+           return  Mockito.mock(BeerService.class);
+       }
+    }
     @Test
     void getBeerById() throws Exception {
+        given(beerService.getById(any())).willReturn(getValidBeerDto());
         mockMvc.perform(get("/api/v1/beer/{beerId}",UUID.randomUUID().toString())
                         .param("iscold","yes")
                 .accept(MediaType.APPLICATION_JSON))
@@ -67,16 +94,8 @@ class BeerControllerTest {
 
     @Test
     void createBeer() throws Exception {
-        BeerDto beerDto = BeerDto.builder().
-                id(null)
-                .version(null)
-                .createdDate(null)
-                .lastModifiedDate(null)
-                .beerName("Galaxy Cat")
-                .beerStyle(BeerStyleEnum.ALE)
-                .upc(123456789012L)
-                .price(BigDecimal.valueOf(300))
-                .build();
+        given(beerService.createBeer(any())).willReturn(getValidBeerDto());
+        BeerDto beerDto = getValidBeerDto();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
         ConstrainedFields fields =
@@ -100,17 +119,9 @@ class BeerControllerTest {
     }
 
     @Test
-    void updateBeerByid() throws Exception {
-        BeerDto beerDto = BeerDto.builder().
-                id(null)
-                .version(null)
-                .createdDate(null)
-                .lastModifiedDate(null)
-                .beerName("Galaxy Cat")
-                .beerStyle(BeerStyleEnum.ALE)
-                .upc(123456789012L)
-                .price(BigDecimal.valueOf(300))
-                .build();
+    void updateBeerById() throws Exception {
+        given(beerService.updateBeerById(any(),any())).willReturn(getValidBeerDto());
+        BeerDto beerDto = getValidBeerDto();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
         mockMvc.perform(put("/api/v1/beer/{beerId}",UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -132,5 +143,15 @@ class BeerControllerTest {
                             .descriptionsForProperty(path), ". ")));
         }
     }
+
+    BeerDto getValidBeerDto(){
+        return BeerDto.builder()
+                .beerName("My Beer")
+                .beerStyle(BeerStyleEnum.ALE)
+                .price(new BigDecimal("2.99"))
+                .upc(BeerLoader.BEER_1_UPC)
+                .build();
+    }
+
 
 }
