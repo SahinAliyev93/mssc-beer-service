@@ -30,4 +30,9 @@ public class MvcExceptionHandler {
     public ResponseEntity<List> bindExceptionHandler(BindException ex) {
         return new ResponseEntity<>(ex.getAllErrors(),HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler({NotFoundException.class})
+    public ResponseEntity<List> notFoundExceptionHandler(BindException ex) {
+        return new ResponseEntity<>(ex.getAllErrors(),HttpStatus.NOT_FOUND);
+    }
 }
